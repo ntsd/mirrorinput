@@ -1,0 +1,36 @@
+{
+  "name": "mirrorinput",
+  "version": "1.0.0",
+  "description": "Mirror input element that will show after unfocus the original field",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ntsd/mirrorinput.git"
+  },
+  "keywords": [
+    "Input",
+    "Gulp",
+    "Form"
+  ],
+  "author": "ntsd",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ntsd/mirrorinput/issues"
+  },
+  "homepage": "https://github.com/ntsd/mirrorinput#readme",
+  "dependencies": {
+    "autoprefixer": "^9.4.5",
+    "browser-sync": "^2.26.3",
+    "cssnano": "^4.1.8",
+    "del": "^3.0.0",
+    "gulp": "^4.0.0",
+    "gulp-eslint": "^5.0.0",
+    "gulp-plumber": "^1.2.1",
+    "gulp-postcss": "^8.0.0",
+    "gulp-rename": "^1.4.0",
+    "gulp-uglify": "^3.0.1"
+  }
+}
