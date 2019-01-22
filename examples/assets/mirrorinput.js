@@ -1,6 +1,10 @@
 "use strict";
 
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
 var MirrorInput = function MirrorInput(origin) {
+  _classCallCheck(this, MirrorInput);
+
   if (!origin) {
     throw new Error("MirrorInput requires an element argument.");
   }
@@ -21,12 +25,7 @@ MirrorInput.prototype.onUpdate = function (text) {
 MirrorInput.prototype.update = function () {
   if (this.copy) {
     var newValue = this.onUpdate(this.origin.value);
-    var width = this.origin.offsetWidth;
     this.copy.value = newValue;
-
-    if (width) {
-      this.copy.style.width = width + "px";
-    }
   }
 };
 
@@ -34,18 +33,13 @@ MirrorInput.prototype.create = function () {
   var origin = this.origin;
   this.parent = document.createElement("div");
   this.parent.classList.add("mirrorinput-parent");
-  this.copy = origin.cloneNode(true); //document.createElement("div");
-
+  this.copy = origin.cloneNode(true);
   this.copy.id = this.copy.id + "Copy";
   this.copy.type = "text";
   this.copy.classList.remove("mirrorinput");
   this.copy.classList.add("mirrorinput-clone");
-  this.copy.style["margin-top"] = "-" + origin.offsetHeight + "px"; // Remove origin placeholder 
-
-  this.copy.placeholder = origin.placeholder; // origin.placeholder = "";
-  //   this.copy.onclick = function () {
-  //     origin.focus();
-  //   };
+  this.copy.style["margin-top"] = "-" + origin.offsetHeight + "px"; // remove origin placeholder
+  // origin.placeholder = "";
 
   origin.parentNode.insertBefore(this.parent, origin);
   this.parent.appendChild(origin);
@@ -53,7 +47,7 @@ MirrorInput.prototype.create = function () {
   this.update();
 };
 
-function init() {
+function initElements() {
   var mirrorElements = document.getElementsByClassName("mirrorinput");
   Array.from(mirrorElements).forEach(function (element) {
     var mirrorInput = new MirrorInput(element);
@@ -74,5 +68,5 @@ function ready(callback) {
 }
 
 ready(function () {
-  init();
+  initElements();
 });

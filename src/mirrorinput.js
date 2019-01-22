@@ -1,16 +1,18 @@
-var MirrorInput = function MirrorInput(origin) {
-  if (!origin) {
-    throw new Error("MirrorInput requires an element argument.");
+class MirrorInput {
+  constructor(origin) {
+    if (!origin) {
+      throw new Error("MirrorInput requires an element argument.");
+    }
+  
+    if (!origin.getAttribute) {
+      return;
+    }
+  
+    this.origin = origin;
+    this.parent = null;
+    this.copy = null;
   }
-
-  if (!origin.getAttribute) {
-    return;
-  }
-
-  this.origin = origin;
-  this.parent = null;
-  this.copy = null;
-};
+}
 
 MirrorInput.prototype.onUpdate = function (text) {
   return text;
@@ -19,12 +21,7 @@ MirrorInput.prototype.onUpdate = function (text) {
 MirrorInput.prototype.update = function () {
   if (this.copy) {
     var newValue = this.onUpdate(this.origin.value);
-    var width = this.origin.offsetWidth;
     this.copy.value = newValue;
-
-    if (width) {
-      this.copy.style.width = width + "px";
-    }
   }
 };
 
@@ -33,7 +30,7 @@ MirrorInput.prototype.create = function () {
 
   this.parent = document.createElement("div");
   this.parent.classList.add("mirrorinput-parent");
-  this.copy = origin.cloneNode(true); //document.createElement("div");
+  this.copy = origin.cloneNode(true);
 
   this.copy.id = this.copy.id + "Copy";
   this.copy.type = "text";
@@ -42,13 +39,8 @@ MirrorInput.prototype.create = function () {
 
   this.copy.style["margin-top"] = "-" + origin.offsetHeight + "px";
 
-  // Remove origin placeholder 
-  this.copy.placeholder = origin.placeholder;
+  // remove origin placeholder
   // origin.placeholder = "";
-  
-//   this.copy.onclick = function () {
-//     origin.focus();
-//   };
 
   origin.parentNode.insertBefore(this.parent, origin);
   this.parent.appendChild(origin);
@@ -56,7 +48,7 @@ MirrorInput.prototype.create = function () {
   this.update();
 };
 
-function init() {
+function initElements() {
   var mirrorElements = document.getElementsByClassName("mirrorinput");
   Array.from(mirrorElements).forEach(function (element) {
     var mirrorInput = new MirrorInput(element); 
@@ -73,7 +65,6 @@ function init() {
   });
 }
 
-
 function ready(callback){
   if (document.readyState!="loading") callback();
   else if (document.addEventListener) document.addEventListener("DOMContentLoaded", callback);
@@ -83,5 +74,5 @@ function ready(callback){
 }
 
 ready(function(){
-  init();
+  initElements();
 });

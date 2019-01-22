@@ -7,11 +7,11 @@
         <form style="margin: 100px;">
             <div class="form-group">
                 <label for="exampleInputName">Name</label>
-                <input type="text" class="form-control mirrorinput" id="exampleInputName" placeholder="Enter Name" value="Hello" onMirror="nameOnShow">
+                <input type="text" class="form-control mirrorinput" onMirror="nameOnShow" id="exampleInputName" placeholder="Enter Name" value="Hello">
             </div>
             <div class="form-group">
                 <label for="exampleInputCard">Card Number</label>
-                <input type="number" class="form-control mirrorinput" id="exampleInputCard" placeholder="Enter Card Number" onMirror="creditCardOnShow">
+                <input type="number" class="form-control mirrorinput" onMirror="creditCardOnShow" id="exampleInputCard" placeholder="Enter Card Number" value="2342424422442433">
             </div>
             <div class="form-group">
                 <label for="exampleInputPhone">Phone Number</label>
@@ -39,9 +39,12 @@
             function creditCardOnShow(text) {
                 let newText = ""; 
                 for(let a in text.split("")) {
-                    console.log(a);
+                    if(a%4 == 0) {
+                        newText += " ";
+                    }
+                    newText += text[a];
                 }
-                return text
+                return newText;
             }
 
             function print() {
