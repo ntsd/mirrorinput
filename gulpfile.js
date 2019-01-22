@@ -32,9 +32,10 @@ function css() {
       .src("./src/*.css")
       .pipe(plumber())
       .pipe(gulp.dest("./examples/assets/"))
+      .pipe(gulp.dest("./dist/"))
       .pipe(rename({ suffix: ".min" }))
       .pipe(postcss([autoprefixer(), cssnano()]))
-      .pipe(gulp.dest("./examples/assets/"))
+      .pipe(gulp.dest("./dist/"))
       .pipe(browsersync.stream());
 }
 
@@ -42,10 +43,10 @@ function css() {
 function scriptsLint() {
     return gulp
       .src(["./src/*.js", "./gulpfile.js"])
-      .pipe(plumber());
-    //   .pipe(eslint())
-    //   .pipe(eslint.format())
-    //   .pipe(eslint.failAfterError());
+      .pipe(plumber())
+      .pipe(eslint())
+      .pipe(eslint.format())
+      .pipe(eslint.failAfterError());
 }
 
 // Transpile, concatenate and minify scripts
@@ -58,6 +59,7 @@ function scripts() {
             "presets": ["@babel/preset-env","@babel/preset-react"]
         }))
         .pipe(gulp.dest("./examples/assets/"))
+        .pipe(gulp.dest("./dist/"))
         .pipe(uglify({mangle: {toplevel: true},
                     compress: {
                         sequences: true,
@@ -70,7 +72,7 @@ function scripts() {
                         drop_console: true
                     }}))
         .pipe(rename({ suffix: ".min" }))
-        .pipe(gulp.dest("./examples/assets/"))
+        .pipe(gulp.dest("./dist/"))
         .pipe(browsersync.stream())
     );
 }

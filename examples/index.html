@@ -7,11 +7,11 @@
         <form style="margin: 100px;">
             <div class="form-group">
                 <label for="exampleInputName">Name</label>
-                <input type="text" class="form-control mirrorinput" onMirror="nameOnShow" id="exampleInputName" placeholder="Enter Name" value="Hello">
+                <input type="text" class="form-control mirrorinput" mirror-format="nameOnShow" id="exampleInputName" placeholder="Enter Name" value="Hello">
             </div>
             <div class="form-group">
                 <label for="exampleInputCard">Card Number</label>
-                <input type="number" class="form-control mirrorinput" onMirror="creditCardOnShow" id="exampleInputCard" placeholder="Enter Card Number" value="2342424422442433">
+                <input type="tel" class="form-control mirrorinput" mirror-format="creditCardOnShow" id="exampleInputCard" placeholder="Enter Card Number" value="2342424422442433">
             </div>
             <div class="form-group">
                 <label for="exampleInputPhone">Phone Number</label>
@@ -33,18 +33,21 @@
                 if(value == "") {
                   return "";
                 }
-                return "Mr. " + value;
+                return {text: "Mr. " + value, spaces: "0000" + "1".repeat(value.length)};
             }
 
             function creditCardOnShow(text) {
-                let newText = ""; 
+                let newText = "";
+                let spaces = "";
                 for(let a in text.split("")) {
                     if(a%4 == 0) {
                         newText += " ";
+                        spaces += "0";
                     }
                     newText += text[a];
+                    spaces += "1";
                 }
-                return newText;
+                return {text: newText, spaces: spaces};
             }
 
             function print() {

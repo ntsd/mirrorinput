@@ -2,16 +2,16 @@
     color: rgba(0, 0, 0, 0);
 }
 
-.mirrorinput-clone {
-    pointer-events: none;
-}
-
 .mirrorinput::placeholder {
     color: rgba(0, 0, 0, 0);
 }
 
 .mirrorinput:focus::placeholder {
     color: inherit;
+}
+
+.mirrorinput-clone {
+    /* pointer-events: none; */
 }
 
 .mirrorinput:focus ~ .mirrorinput-clone {
