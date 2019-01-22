@@ -8,6 +8,7 @@ const cssnano = require("cssnano");
 const rename = require("gulp-rename");
 const autoprefixer = require("autoprefixer");
 const postcss = require("gulp-postcss");
+const babel = require("gulp-babel");
 
 // BrowserSync
 function browserSync(done) {
@@ -30,6 +31,7 @@ function css() {
     return gulp
       .src("./src/*.css")
       .pipe(plumber())
+      .pipe(gulp.dest("./examples/assets/"))
       .pipe(rename({ suffix: ".min" }))
       .pipe(postcss([autoprefixer(), cssnano()]))
       .pipe(gulp.dest("./examples/assets/"))
@@ -40,18 +42,22 @@ function css() {
 function scriptsLint() {
     return gulp
       .src(["./src/*.js", "./gulpfile.js"])
-      .pipe(plumber())
-      .pipe(eslint())
-      .pipe(eslint.format())
-      .pipe(eslint.failAfterError());
+      .pipe(plumber());
+    //   .pipe(eslint())
+    //   .pipe(eslint.format())
+    //   .pipe(eslint.failAfterError());
 }
 
 // Transpile, concatenate and minify scripts
 function scripts() {
     return (
       gulp
-        .src(["./src/*"])
+        .src(["./src/*.js"])
         .pipe(plumber())
+        .pipe(babel({
+            "presets": ["@babel/preset-env","@babel/preset-react"]
+        }))
+        .pipe(gulp.dest("./examples/assets/"))
         .pipe(uglify({mangle: {toplevel: true},
                     compress: {
                         sequences: true,
@@ -63,6 +69,7 @@ function scripts() {
                         join_vars: true,
                         drop_console: true
                     }}))
+        .pipe(rename({ suffix: ".min" }))
         .pipe(gulp.dest("./examples/assets/"))
         .pipe(browsersync.stream())
     );
