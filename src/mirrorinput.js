@@ -59,6 +59,8 @@ MirrorInput.prototype.create = function () {
   this.copy.classList.remove("mirrorinput");
   this.copy.classList.add("mirrorinput-clone");
 
+  this.copy.autocomplete = "off";
+
   this.copy.style["margin-top"] = "-" + origin.offsetHeight + "px";
 
   this.copy.addEventListener("mouseup", e => {

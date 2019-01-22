@@ -7,15 +7,15 @@
         <form style="margin: 100px;">
             <div class="form-group">
                 <label for="exampleInputName">Name</label>
-                <input type="text" class="form-control mirrorinput" mirror-format="nameOnShow" id="exampleInputName" placeholder="Enter Name" value="Hello">
+                <input type="text" class="form-control mirrorinput" mirror-format="onNameShow" id="exampleInputName" placeholder="Enter Name" value="Hello">
             </div>
             <div class="form-group">
                 <label for="exampleInputCard">Card Number</label>
-                <input type="tel" class="form-control mirrorinput" mirror-format="creditCardOnShow" id="exampleInputCard" placeholder="Enter Card Number" value="2342424422442433">
+                <input type="number" class="form-control mirrorinput" mirror-format="onCreditCardShow" id="exampleInputCard" placeholder="Enter Card Number" value="2342424422442433">
             </div>
             <div class="form-group">
                 <label for="exampleInputPhone">Phone Number</label>
-                <input type="tel" class="form-control" id="exampleInputPhone" placeholder="Enter Phone Number">
+                <input type="tel" class="form-control mirrorinput" mirror-format="onPhoneShow" id="exampleInputPhone" placeholder="Enter Phone Number">
             </div>
             <div class="form-group">
                 <label for="exampleInputEmail">Email address</label>
@@ -29,14 +29,14 @@
         </form>
         <script src="../assets/mirrorinput.js"></script>
         <script>
-            function nameOnShow(value) {
+            function onNameShow(value) {
                 if(value == "") {
                   return "";
                 }
                 return {text: "Mr. " + value, spaces: "0000" + "1".repeat(value.length)};
             }
 
-            function creditCardOnShow(text) {
+            function onCreditCardShow(text) {
                 let newText = "";
                 let spaces = "";
                 for(let a in text.split("")) {
@@ -47,6 +47,17 @@
                     newText += text[a];
                     spaces += "1";
                 }
+                return {text: newText, spaces: spaces};
+            }
+
+            function onPhoneShow(text) {
+                let newText = "";
+                let spaces = "";
+                const countryCode = "(+66)";
+                newText += countryCode;
+                spaces += "0".repeat(countryCode.length)
+                newText += text
+                spaces += "1".repeat(text.length)
                 return {text: newText, spaces: spaces};
             }
 
