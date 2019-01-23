@@ -54,13 +54,22 @@ MirrorInput.prototype.create = function () {
   this.copy.type = "text";
   this.copy.autocomplete = "off";
 
-  this.copy.style["margin-top"] = "-" + origin.offsetHeight + "px";
+  origin.style.display = "none";
+  origin.onblur = function() {
+    this.style.display = "none";
+  };
 
   if (["number", "email", "date"].includes(origin.type)) {
-    this.copy.classList.add("mirrorinput-no-pointer");
+    // eslint-disable-next-line no-use-before-define
+    console.warn("Werning MirrorInput should not use with type number, email, date caret position will not update");
+    this.copy.addEventListener("mouseup", () => {
+      origin.style.display = "inherit";
+      origin.focus();
+    });
   }
   else{
     this.copy.addEventListener("mouseup", e => {
+      origin.style.display = "inherit";
       const caretPos = e.target.selectionStart;
       if (this.spaces) {
         setCaretPosition(origin, (this.spaces.slice(0, caretPos).match(/1/g) || []).length);
