@@ -68,13 +68,13 @@ MirrorInput.prototype.create = function () {
   if (["number", "email", "date"].includes(origin.type)) {
     // eslint-disable-next-line no-use-before-define
     console.warn("Werning MirrorInput should not use with type number, email, date caret position will not update");
-    this.copy.addEventListener("mouseup", () => {
+    this.copy.onmouseup = () => {
       origin.style.display = originDisplay;
       origin.focus();
-    });
+    };
   }
   else{
-    this.copy.addEventListener("mouseup", e => {
+    this.copy.onmouseup =  e => {
       origin.style.display = originDisplay;
       const caretPos = e.target.selectionStart;
       if (this.spaces) {
@@ -83,7 +83,7 @@ MirrorInput.prototype.create = function () {
       else {
         setCaretPosition(origin, caretPos);
       }
-    });
+    };
   }
   
   origin.classList.add("mirrorinput");
