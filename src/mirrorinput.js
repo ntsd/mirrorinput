@@ -57,8 +57,12 @@ MirrorInput.prototype.create = function () {
   const originDisplay = window.getComputedStyle(origin).getPropertyValue("display");
 
   origin.style.display = "none";
-  origin.onblur = function() {
-    this.style.display = "none";
+
+  const mirrorInput = this;
+
+  origin.onblur = function () {
+      this.style.display = "none";
+      mirrorInput.update();
   };
 
   if (["number", "email", "date"].includes(origin.type)) {
@@ -92,10 +96,4 @@ MirrorInput.prototype.create = function () {
   this.parent.appendChild(this.copy);
   
   this.update();
-
-  const mirrorInput = this;
-
-  origin.onkeyup = function () {
-    mirrorInput.update();
-  };
 };
