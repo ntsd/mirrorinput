@@ -10,8 +10,8 @@
     color: inherit;
 }
 
-.mirrorinput-clone {
-    /* pointer-events: none; */
+.mirrorinput-clone.mirrorinput-no-pointer {
+    pointer-events: none;
 }
 
 .mirrorinput:focus ~ .mirrorinput-clone {

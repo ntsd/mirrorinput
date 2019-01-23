@@ -1,5 +1,5 @@
 class MirrorInput {
-  constructor(origin) {
+  constructor(origin, format = (x) => {return {text: x};}) {
     if (!origin) {
       throw new Error("MirrorInput requires an element argument.");
     }
@@ -12,17 +12,15 @@ class MirrorInput {
     this.parent = null;
     this.copy = null;
     this.spaces = null;
+    
+    this.onUpdate = format;
+
+    this.create();
   }
 }
 
-MirrorInput.prototype.originalFormat = function (text) {
-  return {text: text};
-};
-
-MirrorInput.prototype.onUpdate = MirrorInput.originalFormat;
-
 MirrorInput.prototype.update = function () {
-  if (this.copy) {
+  if (this.origin.value) {
     const format = this.onUpdate(this.origin.value);
     const newValue = format.text;
 
@@ -50,61 +48,43 @@ MirrorInput.prototype.create = function () {
   
   let origin = this.origin;
 
-  this.parent = document.createElement("div");
-  this.parent.classList.add("mirrorinput-parent");
-
   this.copy = origin.cloneNode(true);
   this.copy.id = this.copy.id + "Copy";
-  this.copy.type = "text";
-  this.copy.classList.remove("mirrorinput");
   this.copy.classList.add("mirrorinput-clone");
-
+  this.copy.type = "text";
   this.copy.autocomplete = "off";
 
   this.copy.style["margin-top"] = "-" + origin.offsetHeight + "px";
 
-  this.copy.addEventListener("mouseup", e => {
-    const caretPos = e.target.selectionStart;
-    if (this.spaces) {
-      setCaretPosition(origin, (this.spaces.slice(0, caretPos).match(/1/g) || []).length);
-    }
-    else {
-      setCaretPosition(origin, caretPos);
-    }
-  });
+  if (["number", "email", "date"].includes(origin.type)) {
+    this.copy.classList.add("mirrorinput-no-pointer");
+  }
+  else{
+    this.copy.addEventListener("mouseup", e => {
+      const caretPos = e.target.selectionStart;
+      if (this.spaces) {
+        setCaretPosition(origin, (this.spaces.slice(0, caretPos).match(/1/g) || []).length);
+      }
+      else {
+        setCaretPosition(origin, caretPos);
+      }
+    });
+  }
+  
+  origin.classList.add("mirrorinput");
+
+  this.parent = document.createElement("div");
+  this.parent.classList.add("mirrorinput-parent");
 
   origin.parentNode.insertBefore(this.parent, origin);
   this.parent.appendChild(origin);
   this.parent.appendChild(this.copy);
   
   this.update();
+
+  const mirrorInput = this;
+
+  origin.onkeyup = function () {
+    mirrorInput.update();
+  };
 };
-
-function initMirrorInputElements() {
-  var mirrorElements = document.getElementsByClassName("mirrorinput");
-  Array.from(mirrorElements).forEach(function (element) {
-    var mirrorInput = new MirrorInput(element); 
-    
-    const onMirrorText = element.getAttribute("mirror-format");
-    
-    if (onMirrorText !== null) mirrorInput.onUpdate = window[onMirrorText];
-
-    mirrorInput.create();
-
-    element.onkeyup = function () {
-      mirrorInput.update();
-    };
-  });
-}
-
-function ready(callback) {
-  if (document.readyState != "loading") callback();
-  else if (document.addEventListener) document.addEventListener("DOMContentLoaded", callback);
-  else document.attachEvent("onreadystatechange", function() {
-      if (document.readyState == "complete") callback();
-  });
-}
-
-ready(function() {
-  initMirrorInputElements();
-});

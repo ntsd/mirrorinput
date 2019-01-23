@@ -7,15 +7,15 @@
         <form style="margin: 100px;">
             <div class="form-group">
                 <label for="exampleInputName">Name</label>
-                <input type="text" class="form-control mirrorinput" mirror-format="onNameShow" id="exampleInputName" placeholder="Enter Name" value="Hello">
+                <input type="text" class="form-control" id="exampleInputName" placeholder="Enter Name" value="Brown">
             </div>
             <div class="form-group">
                 <label for="exampleInputCard">Card Number</label>
-                <input type="number" class="form-control mirrorinput" mirror-format="onCreditCardShow" id="exampleInputCard" placeholder="Enter Card Number" value="2342424422442433">
+                <input type="tel" class="form-control" id="exampleInputCard" placeholder="Enter Card Number" value="2342424422442433">
             </div>
             <div class="form-group">
                 <label for="exampleInputPhone">Phone Number</label>
-                <input type="tel" class="form-control mirrorinput" mirror-format="onPhoneShow" id="exampleInputPhone" placeholder="Enter Phone Number">
+                <input type="tel" class="form-control" id="exampleInputPhone" placeholder="Enter Phone Number">
             </div>
             <div class="form-group">
                 <label for="exampleInputEmail">Email address</label>
@@ -36,24 +36,33 @@
                 return {text: "Mr. " + value, spaces: "0000" + "1".repeat(value.length)};
             }
 
+            var nameMirrorInput = new MirrorInput(document.getElementById("exampleInputName"), onNameShow);
+
             function onCreditCardShow(text) {
                 let newText = "";
                 let spaces = "";
-                for(let a in text.split("")) {
-                    if(a%4 == 0) {
+                for(let i in text.split("")) {
+                    if(i%4 == 0) {
                         newText += " ";
                         spaces += "0";
                     }
-                    newText += text[a];
+                    if (i>2 && i<12) {
+                        newText += "*";
+                    }
+                    else {
+                        newText += text[i];
+                    }
                     spaces += "1";
                 }
                 return {text: newText, spaces: spaces};
             }
 
+            var cardMirrorInput = new MirrorInput(document.getElementById("exampleInputCard"), onCreditCardShow);
+
             function onPhoneShow(text) {
                 let newText = "";
                 let spaces = "";
-                const countryCode = "(+66)";
+                const countryCode = "(+66) ";
                 newText += countryCode;
                 spaces += "0".repeat(countryCode.length)
                 newText += text
@@ -61,12 +70,18 @@
                 return {text: newText, spaces: spaces};
             }
 
+            var phoneMirrorInput = new MirrorInput(document.getElementById("exampleInputPhone"), onPhoneShow);
+
+            var emailMirrorInput = new MirrorInput(document.getElementById("exampleInputEmail"));
+
+            var passwordMirrorInput = new MirrorInput(document.getElementById("exampleInputPassword"), (text) => {return {text: "*".repeat(text.length)}});
+
             function print() {
-                console.log(document.getElementById("exampleInputName").value)
-                console.log(document.getElementById("exampleInputCard").value)
-                console.log(document.getElementById("exampleInputPhone").value)
-                console.log(document.getElementById("exampleInputEmail").value)
-                console.log(document.getElementById("exampleInputPassword").value)
+                console.log(document.getElementById("exampleInputName").value, nameMirrorInput.copy.value)
+                console.log(document.getElementById("exampleInputCard").value, cardMirrorInput.copy.value)
+                console.log(document.getElementById("exampleInputPhone").value, phoneMirrorInput.copy.value)
+                console.log(document.getElementById("exampleInputEmail").value, emailMirrorInput.copy.value)
+                console.log(document.getElementById("exampleInputPassword").value, passwordMirrorInput.copy.value)
             }
         </script>
     </body>

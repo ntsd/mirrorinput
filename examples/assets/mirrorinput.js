@@ -3,6 +3,12 @@
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var MirrorInput = function MirrorInput(origin) {
+  var format = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : function (x) {
+    return {
+      text: x
+    };
+  };
+
   _classCallCheck(this, MirrorInput);
 
   if (!origin) {
@@ -17,18 +23,12 @@ var MirrorInput = function MirrorInput(origin) {
   this.parent = null;
   this.copy = null;
   this.spaces = null;
+  this.onUpdate = format;
+  this.create();
 };
-
-MirrorInput.prototype.originalFormat = function (text) {
-  return {
-    text: text
-  };
-};
-
-MirrorInput.prototype.onUpdate = MirrorInput.originalFormat;
 
 MirrorInput.prototype.update = function () {
-  if (this.copy) {
+  if (this.origin.value) {
     var format = this.onUpdate(this.origin.value);
     var newValue = format.text;
     if (format.spaces) this.spaces = format.spaces;
@@ -56,50 +56,37 @@ MirrorInput.prototype.create = function () {
   }
 
   var origin = this.origin;
-  this.parent = document.createElement("div");
-  this.parent.classList.add("mirrorinput-parent");
   this.copy = origin.cloneNode(true);
   this.copy.id = this.copy.id + "Copy";
-  this.copy.type = "text";
-  this.copy.classList.remove("mirrorinput");
   this.copy.classList.add("mirrorinput-clone");
+  this.copy.type = "text";
   this.copy.autocomplete = "off";
   this.copy.style["margin-top"] = "-" + origin.offsetHeight + "px";
-  this.copy.addEventListener("mouseup", function (e) {
-    var caretPos = e.target.selectionStart;
 
-    if (_this.spaces) {
-      setCaretPosition(origin, (_this.spaces.slice(0, caretPos).match(/1/g) || []).length);
-    } else {
-      setCaretPosition(origin, caretPos);
-    }
-  });
+  if (["number", "email", "date"].includes(origin.type)) {
+    this.copy.classList.add("mirrorinput-no-pointer");
+  } else {
+    this.copy.addEventListener("mouseup", function (e) {
+      var caretPos = e.target.selectionStart;
+
+      if (_this.spaces) {
+        setCaretPosition(origin, (_this.spaces.slice(0, caretPos).match(/1/g) || []).length);
+      } else {
+        setCaretPosition(origin, caretPos);
+      }
+    });
+  }
+
+  origin.classList.add("mirrorinput");
+  this.parent = document.createElement("div");
+  this.parent.classList.add("mirrorinput-parent");
   origin.parentNode.insertBefore(this.parent, origin);
   this.parent.appendChild(origin);
   this.parent.appendChild(this.copy);
   this.update();
+  var mirrorInput = this;
+
+  origin.onkeyup = function () {
+    mirrorInput.update();
+  };
 };
-
-function initMirrorInputElements() {
-  var mirrorElements = document.getElementsByClassName("mirrorinput");
-  Array.from(mirrorElements).forEach(function (element) {
-    var mirrorInput = new MirrorInput(element);
-    var onMirrorText = element.getAttribute("mirror-format");
-    if (onMirrorText !== null) mirrorInput.onUpdate = window[onMirrorText];
-    mirrorInput.create();
-
-    element.onkeyup = function () {
-      mirrorInput.update();
-    };
-  });
-}
-
-function ready(callback) {
-  if (document.readyState != "loading") callback();else if (document.addEventListener) document.addEventListener("DOMContentLoaded", callback);else document.attachEvent("onreadystatechange", function () {
-    if (document.readyState == "complete") callback();
-  });
-}
-
-ready(function () {
-  initMirrorInputElements();
-});
