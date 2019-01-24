@@ -73,7 +73,7 @@ MirrorInput.prototype.create = function () {
 
   if (["number", "email", "date"].includes(origin.type)) {
     // eslint-disable-next-line no-use-before-define
-    console.warn("Werning MirrorInput should not use with type number, email, date caret position will not update");
+    console.warn("(MirrorInput) Warning caret position will not update with type number, email and date");
 
     this.copy.onmouseup = function () {
       origin.style.display = originDisplay;
