@@ -53,6 +53,7 @@ MirrorInput.prototype.create = function () {
   this.copy.classList.add("mirrorinput-clone");
   this.copy.type = "text";
   this.copy.autocomplete = "off";
+  this.copy.readOnly = true;
 
   const originDisplay = window.getComputedStyle(origin).getPropertyValue("display");
 
