@@ -1,11 +1,3 @@
-/* .mirrorinput {
-    color: rgba(0, 0, 0, 0);
-}
-
-.mirrorinput::placeholder {
-    color: rgba(0, 0, 0, 0);
-} */
-
 .mirrorinput:focus {
     color: inherit;
 }

@@ -21,9 +21,9 @@ function browserSync(done) {
     done();
 }
 
-// Clean assets
+// Clean dist
 function clean() {
-    return del(["./examples/assets/"]);
+    return del(["./dist/"]);
 }
 
 // CSS task
@@ -31,7 +31,6 @@ function css() {
     return gulp
       .src("./src/*.css")
       .pipe(plumber())
-      .pipe(gulp.dest("./examples/assets/"))
       .pipe(gulp.dest("./dist/"))
       .pipe(rename({ suffix: ".min" }))
       .pipe(postcss([autoprefixer(), cssnano()]))
@@ -58,7 +57,6 @@ function scripts() {
         .pipe(babel({
             "presets": ["@babel/preset-env","@babel/preset-react"]
         }))
-        .pipe(gulp.dest("./examples/assets/"))
         .pipe(gulp.dest("./dist/"))
         .pipe(uglify({mangle: {toplevel: true},
                     compress: {
