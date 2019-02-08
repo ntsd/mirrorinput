@@ -32,6 +32,7 @@ function css() {
       .src("./src/*.css")
       .pipe(plumber())
       .pipe(gulp.dest("./dist/"))
+      .pipe(gulp.dest("./examples/"))
       .pipe(rename({ suffix: ".min" }))
       .pipe(postcss([autoprefixer(), cssnano()]))
       .pipe(gulp.dest("./dist/"))
@@ -44,8 +45,8 @@ function scriptsLint() {
       .src(["./src/*.js", "./gulpfile.js"])
       .pipe(plumber())
       .pipe(eslint())
-      .pipe(eslint.format())
-      .pipe(eslint.failAfterError());
+      .pipe(eslint.format());
+    //   .pipe(eslint.failAfterError());
 }
 
 // Transpile, concatenate and minify scripts
@@ -58,6 +59,7 @@ function scripts() {
             "presets": ["@babel/preset-env","@babel/preset-react"]
         }))
         .pipe(gulp.dest("./dist/"))
+        .pipe(gulp.dest("./examples/"))
         .pipe(uglify({mangle: {toplevel: true},
                     compress: {
                         sequences: true,

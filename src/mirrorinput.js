@@ -27,6 +27,8 @@ MirrorInput.prototype.update = function () {
     if (format.spaces) this.spaces = format.spaces;
 
     this.copy.value = newValue;
+  } else {
+    this.copy.value = "";
   }
 };
 
@@ -55,28 +57,41 @@ MirrorInput.prototype.create = function () {
   this.copy.autocomplete = "off";
   this.copy.readOnly = true;
 
-  const originDisplay = window.getComputedStyle(origin).getPropertyValue("display");
+  // const originDisplay = window.getComputedStyle(origin).getPropertyValue("display");
 
-  origin.style.display = "none";
+  // origin.style.display = "none";
+  origin.classList.add("mirrorinput-hidden");
 
   const mirrorInput = this;
 
   origin.onblur = function () {
-      this.style.display = "none";
+      // console.log("blur " + origin.value);
+      // this.style.display = "none";
+      this.classList.add("mirrorinput-hidden");
       mirrorInput.update();
   };
 
+  origin.onkeyup = function () {
+      // console.log("key up " + origin.value);
+      mirrorInput.update();
+  };
+
+  origin.onchange = function () {
+      // console.log("on change" + origin.value);
+      mirrorInput.update();
+  };
+  
   if (["number", "email", "date"].includes(origin.type)) {
     // eslint-disable-next-line no-use-before-define
     console.warn("(MirrorInput) Warning caret position will not update with type number, email and date");
     this.copy.onmouseup = () => {
-      origin.style.display = originDisplay;
+      origin.classList.remove("mirrorinput-hidden");
       origin.focus();
     };
   }
   else{
-    this.copy.onmouseup =  e => {
-      origin.style.display = originDisplay;
+    this.copy.onmouseup = e => {
+      origin.classList.remove("mirrorinput-hidden");
       const caretPos = e.target.selectionStart;
       if (this.spaces) {
         setCaretPosition(origin, (this.spaces.slice(0, caretPos).match(/1/g) || []).length);

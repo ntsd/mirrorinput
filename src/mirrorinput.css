@@ -12,4 +12,12 @@
 
 .mirrorinput:focus ~ .mirrorinput-clone {
     display: none;
+    visibility:hidden;
+    pointer-events: none;
+}
+
+.mirrorinput-hidden {
+    display:none;
+    visibility:hidden;
+    pointer-events: none;
 }
