@@ -31,6 +31,7 @@ var MirrorInput = function MirrorInput(origin) {
 
 MirrorInput.prototype.update = function () {
   if (this.origin.value) {
+    this.origin.setAttribute("actualValue", this.origin.value);
     this.actualValue = this.origin.value;
     var format = this.onUpdate(this.origin.value);
     var newValue = format.text;
