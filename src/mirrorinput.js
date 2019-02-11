@@ -12,8 +12,12 @@ class MirrorInput {
     this.parent = null;
     this.copy = null;
     this.spaces = null;
+    this.editMode = false;
     
     this.onUpdate = format;
+
+    this.onOver = false;
+    this.actualValue = null;
 
     this.create();
   }
@@ -21,15 +25,22 @@ class MirrorInput {
 
 MirrorInput.prototype.update = function () {
   if (this.origin.value) {
+    this.actualValue = this.origin.value;
     const format = this.onUpdate(this.origin.value);
     const newValue = format.text;
 
     if (format.spaces) this.spaces = format.spaces;
 
-    this.copy.value = newValue;
+    this.copy.innerHTML = newValue;
   } else {
-    this.copy.value = "";
+    this.copy.innerHTML = "";
   }
+};
+
+MirrorInput.prototype.swap = function () {
+  const temp = this.copy.innerHTML;
+  this.copy.innerHTML = this.origin.value;
+  this.origin.value = temp;
 };
 
 MirrorInput.prototype.create = function () {
@@ -47,60 +58,31 @@ MirrorInput.prototype.create = function () {
         }
     }
   }
-  
-  let origin = this.origin;
-
-  this.copy = origin.cloneNode(true);
-  this.copy.id = this.copy.id + "Copy";
-  this.copy.classList.add("mirrorinput-clone");
-  this.copy.type = "text";
-  this.copy.autocomplete = "off";
-  this.copy.readOnly = true;
-
-  // const originDisplay = window.getComputedStyle(origin).getPropertyValue("display");
-
-  // origin.style.display = "none";
-  origin.classList.add("mirrorinput-hidden");
 
   const mirrorInput = this;
+  
+  let editMode = this.editMode;
+
+  let origin = this.origin;
+
+  this.copy = document.createElement("div");
+  let copy = this.copy;
+
+  copy.hidden = true;
+  copy.id = copy.id + "Copy";
+  copy.classList.add("mirrorinput-clone");
 
   origin.onblur = function () {
-      // console.log("blur " + origin.value);
-      // this.style.display = "none";
-      this.classList.add("mirrorinput-hidden");
-      mirrorInput.update();
+      if (editMode) {
+        editMode = false;
+        mirrorInput.update();
+        mirrorInput.swap();
+      }
   };
 
-  origin.onkeyup = function () {
-      // console.log("key up " + origin.value);
-      mirrorInput.update();
-  };
+  origin.onkeyup = () => mirrorInput.update();
 
-  origin.onchange = function () {
-      // console.log("on change" + origin.value);
-      mirrorInput.update();
-  };
-  
-  if (["number", "email", "date"].includes(origin.type)) {
-    // eslint-disable-next-line no-use-before-define
-    console.warn("(MirrorInput) Warning caret position will not update with type number, email and date");
-    this.copy.onmouseup = () => {
-      origin.classList.remove("mirrorinput-hidden");
-      origin.focus();
-    };
-  }
-  else{
-    this.copy.onmouseup = e => {
-      origin.classList.remove("mirrorinput-hidden");
-      const caretPos = e.target.selectionStart;
-      if (this.spaces) {
-        setCaretPosition(origin, (this.spaces.slice(0, caretPos).match(/1/g) || []).length);
-      }
-      else {
-        setCaretPosition(origin, caretPos);
-      }
-    };
-  }
+  origin.onchange = () => mirrorInput.update();
   
   origin.classList.add("mirrorinput");
 
@@ -109,7 +91,50 @@ MirrorInput.prototype.create = function () {
 
   origin.parentNode.insertBefore(this.parent, origin);
   this.parent.appendChild(origin);
-  this.parent.appendChild(this.copy);
+  this.parent.appendChild(copy);
   
   this.update();
+
+  let onEdit;
+  if (["number", "email", "date"].includes(origin.type)) {
+    // eslint-disable-next-line no-use-before-define
+    console.warn("(MirrorInput) Warning caret position will not update for type number, email and date");
+    onEdit = () => {
+      if (!editMode) {
+        editMode = true;
+        mirrorInput.swap();
+        origin.focus();
+      }
+    };
+  }
+  else{
+    onEdit = e => {
+      if (!editMode) {
+        editMode = true;
+        const caretPos = e.target.selectionStart;
+        mirrorInput.swap();
+        if (mirrorInput.spaces) {
+          setCaretPosition(origin, (mirrorInput.spaces.slice(0, caretPos).match(/1/g) || []).length);
+        }
+        else {
+          setCaretPosition(origin, caretPos);
+        }
+      }
+    };
+  }
+  origin.onmouseup = onEdit;
+  origin.onmouseover = () => {
+    this.onOver = true;
+  };
+  origin.onmouseout = () => {
+    this.onOver = false;
+  };
+  origin.onfocus = () => {
+    if (!editMode && !this.onOver) {
+      editMode = true;
+      mirrorInput.swap();
+    }
+  };
+
+  mirrorInput.swap();
 };
