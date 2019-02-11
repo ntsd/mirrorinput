@@ -48,24 +48,24 @@ MirrorInput.prototype.swap = function () {
   this.origin.value = temp;
 };
 
-MirrorInput.prototype.create = function () {
-  var _this = this;
+MirrorInput.prototype.setCaretPosition = function (elem, caretPos) {
+  var range;
 
-  function setCaretPosition(elem, caretPos) {
-    var range;
+  if (elem.createTextRange) {
+    range = elem.createTextRange();
+    range.move("character", caretPos);
+    range.select();
+  } else {
+    elem.focus();
 
-    if (elem.createTextRange) {
-      range = elem.createTextRange();
-      range.move("character", caretPos);
-      range.select();
-    } else {
-      elem.focus();
-
-      if (elem.selectionStart !== undefined) {
-        elem.setSelectionRange(caretPos, caretPos);
-      }
+    if (elem.selectionStart !== undefined) {
+      elem.setSelectionRange(caretPos, caretPos);
     }
   }
+};
+
+MirrorInput.prototype.create = function () {
+  var _this = this;
 
   var mirrorInput = this;
   var editMode = this.editMode;
@@ -110,9 +110,9 @@ MirrorInput.prototype.create = function () {
         mirrorInput.swap();
 
         if (mirrorInput.spaces) {
-          setCaretPosition(origin, (mirrorInput.spaces.slice(0, caretPos).match(/1/g) || []).length);
+          mirrorInput.setCaretPosition(origin, (mirrorInput.spaces.slice(0, caretPos).match(/1/g) || []).length);
         } else {
-          setCaretPosition(origin, caretPos);
+          mirrorInput.setCaretPosition(origin, caretPos);
         }
       }
     };
