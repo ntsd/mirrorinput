@@ -20,8 +20,7 @@ var MirrorInput = function MirrorInput(origin) {
   }
 
   this.origin = origin;
-  this.parent = null;
-  this.copy = null;
+  this.copy = "";
   this.spaces = null;
   this.editMode = false;
   this.onUpdate = format;
@@ -36,15 +35,15 @@ MirrorInput.prototype.update = function () {
     var format = this.onUpdate(this.origin.value);
     var newValue = format.text;
     if (format.spaces) this.spaces = format.spaces;
-    this.copy.innerHTML = newValue;
+    this.copy = newValue;
   } else {
-    this.copy.innerHTML = "";
+    this.copy = "";
   }
 };
 
 MirrorInput.prototype.swap = function () {
-  var temp = this.copy.innerHTML;
-  this.copy.innerHTML = this.origin.value;
+  var temp = this.copy;
+  this.copy = this.origin.value;
   this.origin.value = temp;
 };
 
@@ -70,11 +69,6 @@ MirrorInput.prototype.create = function () {
   var mirrorInput = this;
   var editMode = this.editMode;
   var origin = this.origin;
-  this.copy = document.createElement("div");
-  var copy = this.copy;
-  copy.hidden = true;
-  copy.id = copy.id + "Copy";
-  copy.classList.add("mirrorinput-clone");
 
   origin.onblur = function () {
     if (editMode) {
@@ -92,13 +86,8 @@ MirrorInput.prototype.create = function () {
     return mirrorInput.update();
   };
 
-  origin.classList.add("mirrorinput");
-  this.parent = document.createElement("div");
-  this.parent.classList.add("mirrorinput-parent");
-  origin.parentNode.insertBefore(this.parent, origin);
-  this.parent.appendChild(origin);
-  this.parent.appendChild(copy);
   this.update();
+  mirrorInput.swap();
   var onEdit;
 
   if (["number", "email", "date"].includes(origin.type)) {
@@ -144,6 +133,4 @@ MirrorInput.prototype.create = function () {
       mirrorInput.swap();
     }
   };
-
-  mirrorInput.swap();
 };
