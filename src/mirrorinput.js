@@ -20,6 +20,22 @@ class MirrorInput {
 
     this.create();
   }
+
+  static setCaretPosition(elem, caretPos) {
+    var range;
+  
+    if (elem.createTextRange) {
+        range = elem.createTextRange();
+        range.move("character", caretPos);
+        range.select();
+    } else {
+        elem.focus();
+  
+        if (elem.selectionStart !== undefined) {
+            elem.setSelectionRange(caretPos, caretPos);
+        }
+    }
+  }
 }
 
 MirrorInput.prototype.update = function () {
@@ -42,22 +58,6 @@ MirrorInput.prototype.swap = function () {
   this.copy = this.origin.value;
   this.origin.value = temp;
 };
-
-MirrorInput.prototype.setCaretPosition = function(elem, caretPos) {
-  var range;
-
-  if (elem.createTextRange) {
-      range = elem.createTextRange();
-      range.move("character", caretPos);
-      range.select();
-  } else {
-      elem.focus();
-
-      if (elem.selectionStart !== undefined) {
-          elem.setSelectionRange(caretPos, caretPos);
-      }
-  }
-}
 
 MirrorInput.prototype.create = function () {
   const mirrorInput = this;
@@ -96,10 +96,10 @@ MirrorInput.prototype.create = function () {
         const caretPos = e.target.selectionStart;
         mirrorInput.swap();
         if (mirrorInput.spaces) {
-          mirrorInput.setCaretPosition(origin, (mirrorInput.spaces.slice(0, caretPos).match(/1/g) || []).length);
+          MirrorInput.setCaretPosition(origin, (mirrorInput.spaces.slice(0, caretPos).match(/1/g) || []).length);
         }
         else {
-          mirrorInput.setCaretPosition(origin, caretPos);
+          MirrorInput.setCaretPosition(origin, caretPos);
         }
       }
     };
