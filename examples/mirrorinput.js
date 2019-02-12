@@ -59,9 +59,10 @@ function () {
 }();
 
 MirrorInput.prototype.update = function () {
+  this.origin.setAttribute("actualValue", this.origin.value);
+  this.actualValue = this.origin.value;
+
   if (this.origin.value) {
-    this.origin.setAttribute("actualValue", this.origin.value);
-    this.actualValue = this.origin.value;
     var format = this.onUpdate(this.origin.value);
     var newValue = format.text;
     if (format.spaces) this.spaces = format.spaces;
