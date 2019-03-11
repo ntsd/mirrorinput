@@ -84,14 +84,13 @@ MirrorInput.prototype.create = function () {
   var mirrorInput = this;
   var editMode = this.editMode;
   var origin = this.origin;
-
-  origin.onblur = function () {
+  origin.addEventListener("blur", function () {
     if (editMode) {
       editMode = false;
       mirrorInput.update();
       mirrorInput.swap();
     }
-  };
+  });
 
   origin.onkeyup = function () {
     return mirrorInput.update();

@@ -22,7 +22,7 @@ class MirrorInput {
   }
 
   static setCaretPosition(elem, caretPos) {
-    var range;
+    let range;
   
     if (elem.createTextRange) {
         range = elem.createTextRange();
@@ -64,13 +64,14 @@ MirrorInput.prototype.create = function () {
   let editMode = this.editMode;
   let origin = this.origin;
 
-  origin.onblur = function () {
+  origin.addEventListener("blur", function () {
       if (editMode) {
         editMode = false;
         mirrorInput.update();
         mirrorInput.swap();
       }
-  };
+  });
+  
   origin.onkeyup = () => mirrorInput.update();
   origin.onchange = () => mirrorInput.update();
   
