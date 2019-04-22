@@ -79,8 +79,6 @@ MirrorInput.prototype.swap = function () {
 };
 
 MirrorInput.prototype.create = function () {
-  var _this = this;
-
   var mirrorInput = this;
   var editMode = this.editMode;
   var origin = this.origin;
@@ -131,18 +129,14 @@ MirrorInput.prototype.create = function () {
     };
   }
 
-  origin.onmouseup = onEdit;
-
-  origin.onmouseover = function () {
-    _this.onOver = true;
-  };
-
-  origin.onmouseout = function () {
-    _this.onOver = false;
+  origin.onmouseup = function () {
+    if (!editMode) {
+      onEdit();
+    }
   };
 
   origin.onfocus = function () {
-    if (!editMode && !_this.onOver) {
+    if (!editMode) {
       editMode = true;
       mirrorInput.swap();
     }
