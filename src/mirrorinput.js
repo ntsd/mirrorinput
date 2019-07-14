@@ -1,11 +1,11 @@
 class MirrorInput {
-  constructor(origin, format = (x) => {return {text: x};}) {
+  constructor(origin, format = (x) => { return { text: x }; }) {
       if (!origin) {
           throw new Error("MirrorInput requires an element argument.");
       }
 
       if (!origin.getAttribute) {
-          return;
+          throw new Error("Can't get getAttribute on your input.");
       }
 
       this.origin = origin;
@@ -30,7 +30,6 @@ class MirrorInput {
           range.select();
       } else {
           elem.focus();
-
           if (elem.selectionStart !== undefined) {
               elem.setSelectionRange(caretPos, caretPos);
           }
@@ -89,8 +88,7 @@ MirrorInput.prototype.create = function () {
               origin.focus();
           }
       };
-  }
-  else{
+  } else {
       onEdit = e => {
           if (!editMode) {
               editMode = true;
@@ -98,8 +96,7 @@ MirrorInput.prototype.create = function () {
               mirrorInput.swap();
               if (mirrorInput.spaces) {
                   MirrorInput.setCaretPosition(origin, (mirrorInput.spaces.slice(0, caretPos).match(/1/g) || []).length);
-              }
-              else {
+              } else {
                   MirrorInput.setCaretPosition(origin, caretPos);
               }
           }
